@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NewsTest</string>
+    <string name="nameNews">Имя Новости</string>
+    <string name="descriptions">описание</string>
+    <string name="data">Дата</string>
+    <string name="no_internet_connection">No internet connection</string>
+</resources>
