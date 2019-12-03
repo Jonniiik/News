@@ -54,6 +54,7 @@ public class ListNewsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_news);
 
+        Common.getData();
         initComponents();
         getInformationAdapterInto(1);
         onClick();
