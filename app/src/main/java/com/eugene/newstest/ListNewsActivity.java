@@ -2,10 +2,12 @@ package com.eugene.newstest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
@@ -61,44 +63,7 @@ public class ListNewsActivity extends AppCompatActivity {
     }
 
     private void initComponents() {
-        rvListNews = (RecyclerView) findViewById(R.id.rvListNews);
-        rvListNews.setHasFixedSize(true);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ListNewsActivity.this, LinearLayoutManager.VERTICAL, false);
-        rvListNews.setLayoutManager(linearLayoutManager);
-        linearLayoutCheckConnector = (LinearLayout) findViewById(R.id.linearLayoutCheckConnector);
-        buttonRestartConnection = (Button) findViewById(R.id.buttonRestartConnection);
-
-
-        RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                int visibleItemCount = linearLayoutManager.getChildCount();
-                int totalItemCount = linearLayoutManager.getItemCount();
-                int firstVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
-
-                if (!isLoading[0]) {
-                    if ((visibleItemCount + firstVisibleItems) >= totalItemCount
-                            && firstVisibleItems >= 0
-                            && totalItemCount >= 10) {
-                        isLoading[0] = true;
-
-                        if (Common.page > 0 && Common.page < 5) {
-                            if (!isOnline()) {
-                                linearLayoutCheckConnector.setVisibility(View.VISIBLE);
-                            }
-                            Common.page = Common.page + 1;
-                            Log.e("myLogs", "onScrolled: " + Common.page);
-                            getInformationAdapterInto(Common.page);
-                        }
-                    }
-                }
-
-
-            }
-        };
-        rvListNews.addOnScrollListener(onScrollListener);
+        initRV();
         compositeDisposable = new CompositeDisposable();
         Retrofit retrofit = RetrofitClient.getRetrofit();
         iRetrofit = retrofit.create(IRetrofitClient.class);
@@ -119,7 +84,6 @@ public class ListNewsActivity extends AppCompatActivity {
         }
     }
 
-    //https://newsapi.org/v2/everything?q=android&from=2019-04-00&sortBy=publishedAt&apiKey=26eddb253e7840f988aec61f2ece2907&page=
     private void getInformationAdapterInto(final int page) {
         compositeDisposable.add(iRetrofit.getNews(String.valueOf(Common.from), Common.sortBy, Common.API_KEY, page)
                 .subscribeOn(Schedulers.io())
@@ -165,5 +129,48 @@ public class ListNewsActivity extends AppCompatActivity {
         });
     }
 
+    private void initRV() {
+        GridLayoutManager gridLayoutManager = null;
+        rvListNews = (RecyclerView) findViewById(R.id.rvListNews);
+        rvListNews.setHasFixedSize(true);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            gridLayoutManager = new GridLayoutManager(this, GridLayoutManager.VERTICAL);
+        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            gridLayoutManager = new GridLayoutManager(this, 2);
 
+        }
+        rvListNews.setLayoutManager(gridLayoutManager);
+        linearLayoutCheckConnector = (LinearLayout) findViewById(R.id.linearLayoutCheckConnector);
+        buttonRestartConnection = (Button) findViewById(R.id.buttonRestartConnection);
+
+        final GridLayoutManager finalGridLayoutManager = gridLayoutManager;
+        RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                int visibleItemCount = finalGridLayoutManager.getChildCount();
+                int totalItemCount = finalGridLayoutManager.getItemCount();
+                int firstVisibleItems = finalGridLayoutManager.findFirstVisibleItemPosition();
+
+                if (!isLoading[0]) {
+                    if ((visibleItemCount + firstVisibleItems) >= totalItemCount
+                            && firstVisibleItems >= 0
+                            && totalItemCount >= 10) {
+                        isLoading[0] = true;
+
+                        if (Common.page > 0 && Common.page < 5) {
+                            if (!isOnline()) {
+                                linearLayoutCheckConnector.setVisibility(View.VISIBLE);
+                            }
+                            Common.page = Common.page + 1;
+                            Log.e("myLogs", "onScrolled: " + Common.page);
+                            getInformationAdapterInto(Common.page);
+                        }
+                    }
+                }
+            }
+        };
+        rvListNews.addOnScrollListener(onScrollListener);
+    }
 }

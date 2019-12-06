@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayoutListNews"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="4dp"
@@ -7,37 +9,35 @@
     android:layout_marginEnd="4dp"
     android:background="@drawable/news_style"
     android:elevation="2dp"
-    android:id="@+id/linearLayoutListNews"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/textViewNameNews"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="1dp"
         android:layout_marginEnd="1dp"
         android:text="@string/nameNews"
         android:textColor="@color/black"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/imageViewImageNews"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginTop="5dp" />
+        android:layout_height="200dp" />
 
     <TextView
         android:id="@+id/textViewDescriptions"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="2dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="2dp"
         android:lines="2"
         android:text="@string/descriptions"
         android:textColor="@color/black"
-        android:textSize="14sp" />
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/textViewData"
@@ -48,6 +48,6 @@
         android:gravity="right"
         android:text="@string/data"
         android:textColor="@color/black"
-        android:textSize="12sp" />
-
+        android:textSize="10sp"
+        tools:ignore="SmallSp" />
 </LinearLayout>

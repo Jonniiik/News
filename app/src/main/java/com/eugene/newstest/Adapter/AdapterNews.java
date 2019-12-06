@@ -2,6 +2,7 @@ package com.eugene.newstest.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,14 @@ public class AdapterNews extends RecyclerView.Adapter<AdapterNews.MyViewHolder> 
         holder.textViewNameNews.setText(new StringBuffer(String.valueOf(mRootObject.getArticles().get(position).getTitle())));
         holder.textViewDescriptions.setText(new StringBuffer(String.valueOf(mRootObject.getArticles().get(position).getDescription())));
         holder.textViewData.setText(new StringBuffer(Common.convertUnixToDate(mRootObject.getArticles().get(position).getPublishedAt())));
-        Picasso.get().load(mRootObject.getArticles().get(position).getUrlToImage()).into(holder.imageViewImageNews);
+        if (mRootObject.getArticles().get(position).getUrlToImage() == null) {
+            holder.imageViewImageNews.setVisibility(View.GONE);
+        } else {
+            Picasso.get().load(mRootObject.getArticles().get(position).getUrlToImage()).into(holder.imageViewImageNews);
+        }
+        if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            holder.textViewDescriptions.setVisibility(View.GONE);
+        }
         holder.linearLayoutListNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
